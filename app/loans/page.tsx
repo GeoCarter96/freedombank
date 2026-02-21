@@ -10,7 +10,7 @@ import Link from "next/link";
 export default function LoanApplication() {
   const [step, setStep] = useState(1);
   const totalSteps = 3;
-
+const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const nextStep = () => setStep((s) => Math.min(s + 1, totalSteps));
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
@@ -31,18 +31,41 @@ export default function LoanApplication() {
       <main className="max-w-xl mx-auto">
         <AnimatePresence mode="wait">
           {step === 1 && (
-            <motion.div 
-              key="step1"
-              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
-              className="space-y-8"
-            >
-              <h2 className="text-4xl italic">What is the purpose of your capital?</h2>
-              <div className="grid grid-cols-1 gap-4">
-                <LoanOption icon={<Home />} title="Real Estate Acquisition" desc="Commercial or residential property" />
-                <LoanOption icon={<Briefcase />} title="Business Expansion" desc="Scaling operations & infrastructure" />
-                <LoanOption icon={<ShieldCheck />} title="Asset Liquidity" desc="Loans against existing wealth" />
-              </div>
-            </motion.div>
+           // Inside your LoanApplication component
+
+
+// Inside your step 1 return:
+<motion.div 
+  key="step1"
+  initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
+  className="space-y-8"
+>
+  <h2 className="text-4xl italic">What is the purpose of your capital?</h2>
+  <div className="grid grid-cols-1 gap-4">
+    <LoanOption 
+      icon={<Home />} 
+      title="Real Estate Acquisition" 
+      desc="Commercial or residential property" 
+      isSelected={selectedOption === "real-estate"}
+      onClick={() => setSelectedOption("real-estate")}
+    />
+    <LoanOption 
+      icon={<Briefcase />} 
+      title="Business Expansion" 
+      desc="Scaling operations & infrastructure" 
+      isSelected={selectedOption === "business"}
+      onClick={() => setSelectedOption("business")}
+    />
+    <LoanOption 
+      icon={<ShieldCheck />} 
+      title="Asset Liquidity" 
+      desc="Loans against existing wealth" 
+      isSelected={selectedOption === "liquidity"}
+      onClick={() => setSelectedOption("liquidity")}
+    />
+  </div>
+</motion.div>
+
           )}
 
           {step === 2 && (
@@ -57,12 +80,12 @@ export default function LoanApplication() {
                   <label className="text-[10px] uppercase tracking-widest opacity-40">Requested Amount</label>
                   <div className="relative">
                     <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-[#a68b67]" size={20} />
-                    <input type="number" placeholder="500,000" className="w-full bg-white/5 border border-white/10 rounded-xl p-4 pl-12 outline-none focus:border-[#a68b67] transition-colors text-2xl" />
+                    <input type="number" placeholder="500,000" className="w-full bg-black border border-white/10 rounded-xl p-4 pl-12 outline-none focus:border-[#a68b67] transition-colors text-2xl" />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] uppercase tracking-widest opacity-40">Duration (Years)</label>
-                  <select className="w-full bg-white/5 border border-white/10 rounded-xl p-4 outline-none focus:border-[#a68b67] transition-colors appearance-none">
+                  <select className="w-full bg-black border border-white/10 rounded-xl p-4 outline-none focus:border-[#a68b67] transition-colors appearance-none">
                     <option>5 Years</option>
                     <option>10 Years</option>
                     <option>25 Years</option>
@@ -105,16 +128,35 @@ export default function LoanApplication() {
   );
 }
 
-function LoanOption({ icon, title, desc }: any) {
+function LoanOption({ icon, title, desc, isSelected, onClick }: any) {
   return (
-    <button className="flex items-center gap-6 p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-[#a68b67]/40 transition-all text-left group">
-      <div className="p-4 bg-[#a68b67]/10 rounded-xl text-[#a68b67] group-hover:bg-[#a68b67] group-hover:text-[#111111] transition-colors">
+    <button 
+      onClick={onClick}
+      className={`flex items-center gap-6 p-6 rounded-2xl border transition-all text-left group relative overflow-hidden ${
+        isSelected 
+          ? "bg-[#a68b67]/20 border-[#a68b67] shadow-[0_0_20px_rgba(166,139,103,0.2)]" 
+          : "bg-white/5 border-white/10 hover:border-white/30"
+      }`}
+    >
+      <div className={`p-4 rounded-xl transition-colors ${
+        isSelected ? "bg-[#a68b67] text-[#111111]" : "bg-[#a68b67]/10 text-[#a68b67]"
+      }`}>
         {icon}
       </div>
       <div>
-        <h4 className="font-bold text-lg">{title}</h4>
+        <h4 className={`font-bold text-lg ${isSelected ? "text-[#f5f1e6]" : ""}`}>{title}</h4>
         <p className="text-[10px] uppercase tracking-widest opacity-40">{desc}</p>
       </div>
+
+      {/* Subtle checkmark or indicator for selection */}
+      {isSelected && (
+        <motion.div 
+          layoutId="outline" 
+          className="absolute inset-0 border-2 border-[#a68b67] rounded-2xl pointer-events-none"
+          initial={false}
+          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+        />
+      )}
     </button>
   );
 }
