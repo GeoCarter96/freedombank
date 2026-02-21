@@ -70,12 +70,12 @@ export default function AboutPage() {
             />
             <ValueCard 
               icon={<Globe />} 
-              title="Global Borderless" 
+              title="Global" 
               text="Wealth that travels with you. Access your liquidity from London to Tokyo without delay." 
             />
             <ValueCard 
               icon={<Award />} 
-              title="Generational Vision" 
+              title=" Vision" 
               text="We plan in decades, not quarters. Your legacy is built to survive market cycles." 
             />
           </div>
