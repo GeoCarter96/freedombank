@@ -6,6 +6,7 @@ import {
   History, Settings, LogOut, Plus, Shield, Menu, X 
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function AccountDashboard() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,13 +37,17 @@ export default function AccountDashboard() {
         animate={{ x: 0 }}
         exit={{ x: "-100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-        className="fixed inset-y-0 left-0 z-50 w-72 bg-[#111111] p-8 flex flex-col gap-12 md:hidden"
+        className="fixed inset-y-0 left-0 z-[100] w-72 bg-[#111111] p-8 flex flex-col gap-12 md:hidden"
+       onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-black italic tracking-tighter uppercase">FB</h1>
           <button onClick={() => setIsMenuOpen(false)}><X size={24} /></button>
         </div>
+         <div className="relative z-[110]">
         <NavContent />
+        </div>
+
       </motion.aside>
 
       {/* Mobile Overlay */}
@@ -182,28 +187,39 @@ function Stat({ label, value }: any) {
   );
   
 }
-// 1. ADD THIS AT THE VERY BOTTOM OF YOUR FILE
+
+
 function NavContent() {
+  const router = useRouter();
+
+  const handleBackClick = (e: React.MouseEvent | React.TouchEvent) => {
+    // Prevent the click from being captured by any draggable parent (Framer Motion)
+    e.stopPropagation();
+    router.push("/");
+  };
+
   return (
     <div className="flex flex-col h-full">
       <nav className="flex flex-col gap-8">
-        <NavItem icon={<LayoutDashboard size={18}/>} label="Overview" active />
-        <NavItem icon={<History size={18}/>} label="Ledger" />
-        <NavItem icon={<Settings size={18}/>} label="Security" />
+        <NavItem icon={<LayoutDashboard size={18} />} label="Overview" active />
+        <NavItem icon={<History size={18} />} label="Ledger" />
+        <NavItem icon={<Settings size={18} />} label="Security" />
       </nav>
 
-      {/* This ensures the Back button stays at the bottom */}
-     <div className="mt-auto pt-10">
-  {/* Add pointer-events-auto to bypass drag interference */}
- <Link 
-  href="/" 
-  className="relative z-50 pointer-events-auto flex items-center gap-3 text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity"
->
-  <LogOut size={14} /> Back
-</Link>
-
-</div>
-
+     
+      <div className="mt-auto pt-10 relative isolate z-50">
+        <button
+          type="button"
+          onClick={handleBackClick}
+          // Prevents mobile drag gestures from hijacking the start of the tap
+          onPointerDownCapture={(e) => e.stopPropagation()}
+          className="flex items-center gap-3 text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity pointer-events-auto touch-none"
+          style={{ touchAction: "none" }}
+        >
+          <LogOut size={14} /> 
+          <span>Back</span>
+        </button>
+      </div>
     </div>
   );
 }
