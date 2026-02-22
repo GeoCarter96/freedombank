@@ -195,14 +195,13 @@ function NavContent() {
       {/* This ensures the Back button stays at the bottom */}
      <div className="mt-auto pt-10">
   {/* Add pointer-events-auto to bypass drag interference */}
-  <Link href="/" className="relative z-50 pointer-events-auto block">
-    <button 
-      type="button"
-      className="flex items-center gap-3 text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity"
-    >
-      <LogOut size={14} /> Back
-    </button>
-  </Link>
+ <Link 
+  href="/" 
+  className="relative z-50 pointer-events-auto flex items-center gap-3 text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity"
+>
+  <LogOut size={14} /> Back
+</Link>
+
 </div>
 
     </div>
